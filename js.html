@@ -1,0 +1,53 @@
+<script>
+  // ページ読み込み時処理
+  window.addEventListener("load", (event) => {
+    var idlist = ["sheetList",
+                  "campList",
+                  "mngCampList",
+                  "fistAidList",
+                  "cookList",
+                  "citizenList",
+                  "pioneerList",
+                  "leaderList",
+                  "hikeList",
+                  "songList",
+                  "commList",
+                  "measList",
+                  "obsrvList"
+                  ];
+    idlist.forEach(id => {
+      var elem = document.getElementById(id);
+      elem.style.display = "none";
+    });;
+  });
+  
+  // 表示・非表示スイッチ関数
+  function switchListDisplay(titleStr, titleID, listID) {
+    var elemTitle = document.getElementById(titleID);
+    var elemList = document.getElementById(listID);
+    
+    if (elemList.style.display == "block") {
+      elemList.style.display = "none";
+      elemTitle.innerHTML = "▶"+titleStr;
+    } else {
+      elemList.style.display = "block";
+      elemTitle.innerHTML = "▼"+titleStr;
+    }
+  }
+  
+  // 大項目クリック処理
+  function clickTitle(titleStr, titleID, listID) {
+    switchListDisplay(titleStr, titleID, listID);
+  }
+  
+  // 「完了」ボタンクリック
+  function clickApply() {
+    google.script.host.close();
+  }
+  
+  // 「キャンセル」ボタンクリック
+  function clickCancel() {
+    google.script.host.close();
+  }
+
+</script>
