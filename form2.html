@@ -5,16 +5,7 @@
     <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons.css">
   </head>
   <body>
-    <!---    
-    <div align="left">
-      <select multiple>
-        <? getSheetsName().forEach(function(sheetName) { ?>
-          <option value="<?= sheetName.name ?>" <? if (sheetName.selected) { ?>selected="1" <?}?>><?= sheetName.name ?></option>
-        <? }); ?>
-      </select>
-    </div>
-    -->
-
+    
     <!-- 選択するシート（対象者） -->
     <h2 onclick="clickTitle('対象者', 'sheetTitle', 'sheetList')" id="sheetTitle">▶対象者</h2>
     <div id="sheetList">
