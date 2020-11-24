@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+    <script>
+      function sayhello() {
+        var acc = document.getElementById("text_1").value;
+        google.script.run.sayhello(acc);
+        // google.script.host.close();
+      }
+    </script>
+    <form>
+      <div align="center">
+        <h1>フォーム</h1>
+      </div>
+      <input type="text" value="aaa" name="text1" id="text_1"/>
+      <br />
+      <div align="right">
+        <button onclick="sayhello()">送信</button>
+      </div>
+    </form>
+  </body>
+</html>
+
+
