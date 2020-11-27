@@ -1,20 +1,25 @@
 <script>
+  // チェックボックスアイテムIDリスト取得
+  function getCheckItemIDList() {
+    return ["sheetList",
+            "campList",
+            "mngCampList",
+            "fistAidList",
+            "cookList",
+            "citizenList",
+            "pioneerList",
+            "leaderList",
+            "hikeList",
+            "songList",
+            "commList",
+            "measList",
+            "obsrvList"
+            ];
+  }
+
   // ページ読み込み時処理
   window.addEventListener("load", (event) => {
-    var idlist = ["sheetList",
-                  "campList",
-                  "mngCampList",
-                  "fistAidList",
-                  "cookList",
-                  "citizenList",
-                  "pioneerList",
-                  "leaderList",
-                  "hikeList",
-                  "songList",
-                  "commList",
-                  "measList",
-                  "obsrvList"
-                  ];
+    var idlist = getCheckItemIDList();
     idlist.forEach(id => {
       var elem = document.getElementById(id);
       elem.style.display = "none";
@@ -42,12 +47,44 @@
   
   // 「完了」ボタンクリック
   function clickApply() {
-    google.script.host.close();
+    var targetList = getTargetSheetList();
+    var data = getCheckDataList();
+    google.script.run.SetLog(data);
   }
   
   // 「キャンセル」ボタンクリック
   function clickCancel() {
     google.script.host.close();
   }
-
+  
+  // 対象者リスト
+  function getTargetSheetList() {
+    var sheetCheckList = document.getElementById("sheetList").getElementsByTagName("input");
+    sheetCheckList = Array.from(sheetCheckList);
+    
+    var targetList = [];
+    sheetCheckList.forEach(elem => {
+      if (elem.checked) {
+        targetList.push(elem.name);
+      }
+    });
+    return targetList;
+  }
+  
+  // チェックしたデータを取得
+  function getCheckDataList() {
+    var idList = getCheckItemIDList();
+    idList.shift();
+    var data = {};
+    
+    idList.forEach(id => {
+      var tempCheckList = [];
+      var tempList = Array.from(document.getElementById(id).getElementsByTagName("input"));
+      tempList.forEach(elem => {
+        tempCheckList.push(elem.checked);
+      });
+      data[id] = tempCheckList;
+    });
+    return data;
+  }
 </script>
