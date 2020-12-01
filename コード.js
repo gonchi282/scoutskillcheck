@@ -1,14 +1,25 @@
+function onOpen(e) {
+  SpreadsheetApp.getUi()
+    .createAddonMenu()
+    .addItem("認定する", "showSidebar")
+    .addToUi();
+}
+
+function onInstall(e) {
+  onOpen(e);
+}
+
 // サイドバー
 function showSidebar() {
 //  var htmlOutput = HtmlService.createHtmlOutputFromFile("form");
 //  SpreadsheetApp.getUi().showSidebar(htmlOutput);
-  var htmlOutput = HtmlService.createTemplateFromFile("form2").evaluate().setTitle("選択");
+  var htmlOutput = HtmlService.createTemplateFromFile("form").evaluate().setTitle("選択");
   SpreadsheetApp.getUi().showSidebar(htmlOutput);
 }
 
 // ダイアログ
 function showDialog() {
-  var htmlOutput = HtmlService.createTemplateFromFile("form2").evaluate().setTitle("abcde");
+  var htmlOutput = HtmlService.createTemplateFromFile("form").evaluate().setTitle("abcde");
   SpreadsheetApp.getUi().showModalDialog(htmlOutput, "Dialog");
 }
 
@@ -23,18 +34,43 @@ function getSheetsName() {
   return sheetNameList;
 }
 
-// doSomething
-function doSomething(targetSheets) {
-  var activeSpreadSheet = SpreadsheetApp.getActiveSpreadsheet();
-  targetSheets.forEach(sheetName => {
+// 対象者の対象のアイテムの「認定した人」、「日付」に入力する
+function certScoutSkill(targetList, data, certpsn, date) {
+  const certpsnCol = 3;  // 「認定した人」列
+  const dateCol = 4;     // 「日付」列
+  const activeSpreadSheet = SpreadsheetApp.getActiveSpreadsheet();
+  const startRow = {"campList" : 4,
+                    "mngCampList" : 15,
+                    "fistAidList" : 25,
+                    "cookList" : 31,
+                    "citizenList" : 41,
+                    "pioneerList" : 52,
+                    "leaderList" : 62,
+                    "hikeList" : 70,
+                    "songList" : 81,
+                    "commList" : 90,
+                    "measList" : 98,
+                    "obsrvList" : 109};
+  
+  // 対象者のシートに「認定した人」、「日付」を入力
+  targetList.forEach(sheetName => {
     var sheet = activeSpreadSheet.getSheetByName(sheetName);
-    sheet.getRange(1, 1).setValue(1);
+    Object.keys(startRow).forEach(key => {
+      for(var row = startRow[key]; row < startRow[key] + data[key].length; row++) {
+        var itemIndex = row - startRow[key];
+        if (data[key][itemIndex]) {
+          var cellpsn = sheet.getRange(row, certpsnCol, 1, 2);
+          cellpsn.setValues([[certpsn, date]]);
+        }
+      }
+    });
   });
+  
 }
 
 // 野営章項目数
 function getCampItemCnt() {
-  return 7;
+  return 8;
 }
 
 // 野営管理章項目数
