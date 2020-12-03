@@ -3,6 +3,7 @@
   <head>
     <base target="_top">
     <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons.css">
+    <?!= HtmlService.createHtmlOutputFromFile('css').getContent(); ?>
   </head>
   <body>
     <!---    
@@ -17,25 +18,33 @@
 
     <!-- 選択するシート（対象者） -->
     <h2 onclick="clickTitle('対象者', 'sheetTitle', 'sheetList')" id="sheetTitle">▶対象者</h2>
-    <div id="sheetList">
+    <div class="chkbox" id="sheetList">
       <? getSheetsName().forEach(function(sheetName) {?>
-        <input type="checkbox" value="<?= sheetName.id ?>" id="<?= sheetName.id ?>" name="<?= sheetName.name ?>" ><?= sheetName.name ?>
+        <input type="checkbox" value="<?= sheetName.id ?>" id="<?= sheetName.id ?>" name="<?= sheetName.name ?>" >
+        <label for="<?= sheetName.id ?>"><?= sheetName.name ?></label>
         <br />
       <? }); ?>
     </div>
     
     <!-- 野営章 -->
     <h2 onclick="clickTitle('野営章', 'campTitle', 'campList')" id="campTitle">▶野営章</h2>
-    <div id="campList">
+    <div class="chkbox" id="campList">
       <? for(var i=0; i < getCampItemCnt(); i++) { ?>
-      <input type="checkbox" value="camp<?=i?>" id="camp<?=i?>">(<?=i+1?>)<br />
+      <input type="checkbox" value="camp<?=i?>" id="camp<?=i?>">
+      <label for="camp<?=i?>" title="⑴入団以来通算 10 泊以上のキャンプ（3 泊以上のキャンプに 2 回参加したことを含むこと、&#13;&#10;また自分が計画した班キャンプを含むことができる）に参加していること。">(<?=i+1?>)</label> <br />
       <!--
-      <input type="checkbox" value="yaei_2" id="yaei2">(2)<br />
-      <input type="checkbox" value="yaei_3" id="yaei3">(3)<br />
-      <input type="checkbox" value="yaei_4" id="yaei4">(4)<br />
-      <input type="checkbox" value="yaei_5" id="yaei5">(5)<br />
-      <input type="checkbox" value="yaei_6" id="yaei6">(6)<br />
-      <input type="checkbox" value="yaei_7" id="yaei7">(7)<br />
+      <input type="checkbox" value="camp1" id="camp1">
+      <label for="camp1">(2)</label><br />
+      <input type="checkbox" value="camp2" id="camp2">
+      <label for="camp2">(3)</label><br />
+      <input type="checkbox" value="camp3" id="camp3">
+      <label for="camp3">(4)</label><br />
+      <input type="checkbox" value="camp4" id="camp4">
+      <label for="camp4">(5)</label><br />
+      <input type="checkbox" value="camp5" id="camp5">
+      <label for="camp5">(6)</label><br />
+      <input type="checkbox" value="camp6" id="camp6">
+      <label for="camp6">(7)</label><br />
       -->
       <? }?>
     </div>
@@ -43,89 +52,111 @@
 
     <!-- 野営管理章 -->
     <h2 onclick="clickTitle('野営管理章', 'mngCampTitle', 'mngCampList')" id="mngCampTitle">▶野営管理章<h2>
-    <div id="mngCampList">
+    <div class="chkbox" id="mngCampList">
       <? for(var i=0; i < getMngCampItemCnt(); i++) { ?>
-      <input type="checkbox" value="mngCamp<?=i?>" id="mngCamp<?=i?>">(<?=i+1?>)<br />
+      <input type="checkbox" value="mngCamp<?=i?>" id="mngCamp<?=i?>">
+      <label for="mngCamp<?=i?>">(<?=i+1?>)</label>
+      <br />
       <? }?>
     </div>
     
     <!-- 救急章 -->
     <h2 onclick="clickTitle('救急章', 'fistAidTitle', 'fistAidList')" id="fistAidTitle">▶救急章</h2>
-    <div id="fistAidList">
+    <div class="chkbox" id="fistAidList">
       <? for(var i=0; i < getFirstAidItemCnt(); i++) { ?>
-      <input type="checkbox" value="firstAid<?=i?>" id="fistAid<?=i?>">(<?=i+1?>)<br />
+      <input type="checkbox" value="firstAid<?=i?>" id="fistAid<?=i?>">
+      <label for="firstAid<?=i?>">(<?=i+1?>)</label>
+      <br />
       <? }?>
     </div>
     
     <!-- 野外炊事章 -->
     <h2 onclick="clickTitle('野外炊事章', 'cookTitle', 'cookList')" id="cookTitle">▶野外炊事章</h2>
-    <div id="cookList">
+    <div class="chkbox" id="cookList">
       <? for(var i=0; i < getCookItemCnt(); i++) { ?>
-      <input type="checkbox" value="cook<?=i?>" id="cook<?=i?>">(<?=i+1?>)<br />
+      <input type="checkbox" value="cook<?=i?>" id="cook<?=i?>">
+      <label for="cook<?=i?>">(<?=i+1?>)</label>
+      <br />
       <? }?>
     </div>
     
     <!-- 公民章 -->
     <h2 onclick="clickTitle('公民章', 'citizenTitle', 'citizenList')" id="citizenTitle">▶公民章</h2>
-    <div id="citizenList">
+    <div class="chkbox" id="citizenList">
       <? for(var i=0; i < getCitizenItemCnt(); i++) { ?>
-      <input type="checkbox" value="citizen<?=i?>" id="citizen<?=i?>">(<?=i+1?>)<br />
+      <input type="checkbox" value="citizen<?=i?>" id="citizen<?=i?>">
+      <label for="citizen<?=i?>">(<?=i+1?>)</label>
+      <br />
       <? }?>
     </div>
     
     <!-- パイオニアリング章 -->
     <h2 onclick="clickTitle('パイオニアリング章', 'pioneerTitle', 'pioneerList')" id="pionneerTitle">▶パイオニアリング章</h2>
-    <div id="pioneerList">
+    <div class="chkbox" id="pioneerList">
       <? for(var i=0; i < getPioneerItemCnt(); i++) { ?>
-      <input type="checkbox" value="pioneer<?=i?>" id="pioneer<?=i?>">(<?=i+1?>)<br />
+      <input type="checkbox" value="pioneer<?=i?>" id="pioneer<?=i?>">
+      <label for="pioneer<?=i?>">(<?=i+1?>)</label>
+      <br />
       <? }?>
     </div>
     
     <!-- リーダーシップ章 -->
     <h2 onclick="clickTitle('リーダーシップ章', 'leaderTitle', 'leaderList')" id="leaderTitle">▶リーダーシップ章</h2>
-    <div id="leaderList">
+    <div class="chkbox" id="leaderList">
       <? for(var i=0; i < getLeaderItemCnt(); i++) { ?>
-      <input type="checkbox" value="leader<?=i?>" id="leader<?=i?>">(<?=i+1?>)<br />
+      <input type="checkbox" value="leader<?=i?>" id="leader<?=i?>">
+      <label for="leader<?=i?>">(<?=i+1?>)</label>
+      <br />
       <? }?>
     </div>
     
     <!-- ハイキング章 -->
     <h2 onclick="clickTitle('ハイキング章', 'hikeTitle', 'hikeList')" id="hikeTitle">▶ハイキング章</h2>
-    <div id="hikeList">
+    <div class="chkbox" id="hikeList">
       <? for(var i=0; i < getHikeItemCnt(); i++) { ?>
-      <input type="checkbox" value="hike<?=i?>" id="hike<?=i?>">(<?=i+1?>)<br />
+      <input type="checkbox" value="hike<?=i?>" id="hike<?=i?>">
+      <label for="hike<?=i?>">(<?=i+1?>)</label>
+      <br />
       <? }?>
     </div>
     
     <!-- スカウトソング章 -->
     <h2 onclick="clickTitle('スカウトソング章', 'songTitle', 'songList')" id="songTitle">▶スカウトソング章</h2>
-    <div id="songList">
+    <div class="chkbox" id="songList">
       <? for(var i=0; i < getSongItemCnt(); i++) { ?>
-      <input type="checkbox" value="song<?=i?>" id="song<?=i?>">(<?=i+1?>)<br />
+      <input type="checkbox" value="song<?=i?>" id="song<?=i?>">
+      <label for="song<?=i?>">(<?=i+1?>)</label>
+      <br />
       <? }?>
     </div>
     
     <!-- 通信章 -->
     <h2 onclick="clickTitle('通信章', 'commTitle', 'commList')" id="commTitle">▶通信章</h2>
-    <div id="commList">
+    <div class="chkbox" id="commList">
       <? for(var i=0; i < getCommItemCnt(); i++) { ?>
-      <input type="checkbox" value="comm<?=i?>" id="comm<?=i?>">(<?=i+1?>)<br />
+      <input type="checkbox" value="comm<?=i?>" id="comm<?=i?>">
+      <label for="comm<?=i?>">(<?=i+1?>)</label>
+      <br />
       <? }?>
     </div>
     
     <!-- 計測章 -->
     <h2 onclick="clickTitle('計測章', 'measTitle', 'measList')" id="measTitle">▶計測章</h2>
-    <div id="measList">
+    <div class="chkbox" id="measList">
       <? for(var i=0; i < getMeasItemCnt(); i++) { ?>
-      <input type="checkbox" value="meas<?=i?>" id="meas<?=i?>">(<?=i+1?>)<br />
+      <input type="checkbox" value="meas<?=i?>" id="meas<?=i?>">
+      <label for="meas<?=i?>">(<?=i+1?>)</label>
+      <br />
       <? }?>
     </div>
     
     <!-- 観察章 -->
     <h2 onclick="clickTitle('観察章', 'obsrvTitle', 'obsrvList')" id="obsrvTitle">▶観察章</h2>
-    <div id="obsrvList">
+    <div class="chkbox" id="obsrvList">
       <? for(var i=0; i < getObsrvItemCnt(); i++) { ?>
-      <input type="checkbox" value="obsrv<?=i?>" id="obsrv<?=i?>">(<?=i+1?>)<br />
+      <input type="checkbox" value="obsrv<?=i?>" id="obsrv<?=i?>">
+      <label for="obsrv<?=i?>">(<?=i+1?>)</label>
+      <br />
       <? }?>
     </div>
     
@@ -135,8 +166,8 @@
     </div>
     <br />
     <div align="right">
-      <button onClick="clickApply();" value="完了">完了</button>
-      <button onClick="clickCancel();" value="キャンセル">キャンセル</button>
+      <button onClick="clickApply();" value="完了" id="btnApply">完了</button>
+      <button onClick="clickCancel();" value="キャンセル" id="btnCancel">キャンセル</button>
     </div>
     
    <?!= HtmlService.createHtmlOutputFromFile('js').getContent(); ?>
