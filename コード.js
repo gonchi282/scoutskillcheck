@@ -1,3 +1,9 @@
+// Copyright © 2020 Koki Imai
+// 技能章チェック用スクリプト
+
+// スプレッドシートオープン
+// スプレッドシートを開いたらアドオンメニューに
+// このスクリプトを呼び出す項目を追加する
 function onOpen(e) {
   SpreadsheetApp.getUi()
     .createAddonMenu()
@@ -9,7 +15,7 @@ function onInstall(e) {
   onOpen(e);
 }
 
-// サイドバー
+// サイドバー表示
 function showSidebar() {
 //  var htmlOutput = HtmlService.createHtmlOutputFromFile("form");
 //  SpreadsheetApp.getUi().showSidebar(htmlOutput);
@@ -17,7 +23,7 @@ function showSidebar() {
   SpreadsheetApp.getUi().showSidebar(htmlOutput);
 }
 
-// ダイアログ
+// ダイアログ表示
 function showDialog() {
   var htmlOutput = HtmlService.createTemplateFromFile("form").evaluate().setTitle("abcde");
   SpreadsheetApp.getUi().showModalDialog(htmlOutput, "Dialog");
@@ -34,11 +40,9 @@ function getSheetsName() {
   return sheetNameList;
 }
 
-// 対象者の対象のアイテムの「認定した人」、「日付」に入力する
-function certScoutSkill(targetList, data, certpsn, date) {
-  const certpsnCol = 3;  // 「認定した人」列
-  const dateCol = 4;     // 「日付」列
-  const activeSpreadSheet = SpreadsheetApp.getActiveSpreadsheet();
+// 各項目スタート行取得
+// 将来的に動的に取得できるようにしたい
+function getStartRowList() {
   const startRow = {"campList" : 4,
                     "mngCampList" : 15,
                     "fistAidList" : 25,
@@ -51,81 +55,63 @@ function certScoutSkill(targetList, data, certpsn, date) {
                     "commList" : 90,
                     "measList" : 98,
                     "obsrvList" : 109};
+  return startRow;
+}
+
+// 対象者の対象のアイテムの「認定した人」、「日付」に入力する
+function certScoutSkill(targetList, data, certpsn, date) {
+  const certpsnCol = 3;  // 「認定した人」列
+  const dateCol = 4;     // 「日付」列
+  const activeSpreadSheet = SpreadsheetApp.getActiveSpreadsheet();
+  const startRow = getStartRowList();
+  var notChangedDataObject = {};
+  var notChangedItemObject;
+  var notChangedItemIndexArray;
   
   // 対象者のシートに「認定した人」、「日付」を入力
   targetList.forEach(sheetName => {
     var sheet = activeSpreadSheet.getSheetByName(sheetName);
+    // 大項目ごとの処理
+    notChangedItemObject = {};
     Object.keys(startRow).forEach(key => {
+      notChangedItemIndexArray = [];
+      // チェックするアイテムごとの処理
       for(var row = startRow[key]; row < startRow[key] + data[key].length; row++) {
         var itemIndex = row - startRow[key];
+        // チェックされたデータを更新
         if (data[key][itemIndex]) {
           var cellpsn = sheet.getRange(row, certpsnCol, 1, 2);
-          cellpsn.setValues([[certpsn, date]]);
+          var values = cellpsn.getValues();
+          // 「認定した人」と「日付」が空白の場合のみ更新する
+          if (!values[0][0] && !values[0][1]) {
+            cellpsn.setValues([[certpsn, date]]);
+          // すでに入力されている場合は変更しないデータとして蓄積する
+          } else {
+            notChangedItemIndexArray.push(itemIndex);
+          }
         }
       }
+      notChangedItemObject[key] = notChangedItemIndexArray;
+      notChangedItemIndexArray = null;
     });
+    notChangedDataObject[sheetName] = notChangedItemObject;
+    notChangedItemObject = null;
   });
+
+  return notChangedDataObject;
+}
+
+// ツールチップ用文字列を取得する
+function getToolTipStr(itemId, itemIndex) {
+  const descCol = 2;
+  const activeSheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const startRow = getStartRowList();
   
-}
-
-// 野営章項目数
-function getCampItemCnt() {
-  return 8;
-}
-
-// 野営管理章項目数
-function getMngCampItemCnt() {
-  return 7;
-}
-
-// 救急章項目数
-function getFirstAidItemCnt() {
-  return 3;
-}
-
-// 野外炊飯章項目数
-function getCookItemCnt() {
-  return 7;
-}
-
-// 公民章項目数
-function getCitizenItemCnt() {
-  return 8;
-}
-
-// パイオニアリング章項目数
-function getPioneerItemCnt() {
-  return 7;
-}
-
-// リーダーシップ章項目数
-function getLeaderItemCnt() {
-  return 5;
-}
-
-// ハイキング章項目数
-function getHikeItemCnt() {
-  return 8;
-}
-
-// スカウトソング章項目数
-function getSongItemCnt() {
-  return 4;
-}
-
-// 通信章項目数
-function getCommItemCnt() {
-  return 5;
-}
-
-// 計測章項目数
-function getMeasItemCnt() {
-  return 8;
-}
-
-// 観察章項目数
-function getObsrvItemCnt() {
-  return 6;
+  // セルからツールチップ用文字列を取得する
+  var cell = activeSheet.getRange(startRow[itemId] + itemIndex, descCol);
+  var tips = cell.getValue();
+  
+  return tips;
 }
 
 // ログ
@@ -135,5 +121,6 @@ function SetLog(msg) {
 
 // メッセージ表示
 function MsgBox(msg) {
+  Logger.log(msg);
   Browser.msgBox(msg);
 }

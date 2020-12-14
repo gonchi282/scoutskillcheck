@@ -23,7 +23,7 @@
     idlist.forEach(id => {
       var elem = document.getElementById(id);
       elem.style.display = "none";
-    });;
+    });
   });
   
   // 表示・非表示スイッチ関数
@@ -46,22 +46,45 @@
   }
   
   // 「完了」ボタンクリック
-  function clickApply() {
+  async function clickApply() {
+  
+    // 入力確認
     var certpsn = document.getElementById("certpsn").value;
     if (!certpsn) {
-      callMsgBox("認定した人を入力してください");
+      await callMsgBox("認定した人を入力してください");
       return;
     }
     var date = document.getElementById("date").value;
     if (!date) {
-      callMsgBox("日付を入力してください");
+      await callMsgBox("日付を入力してください");
       return;
     }
     var targetList = getTargetSheetList();
     var data = getCheckDataList();
     
-    var result = callCertScoutSkill(targetList, data, certpsn, date);
-    result.then((result) => callMsgBox("成功しました")).catch((error) => callMsgBox("失敗しました"));
+    // データ更新・チェック
+    var notChangedDataObject = await callCertScoutSkill(targetList, data, certpsn, date);
+    
+    await callMsgBox("成功しました");
+    callSetLog(notChangedDataObject);
+    
+    try {
+      var flag = false;
+      Object.keys(notChangedDataObject).forEach(items => {
+        Object.keys(notChangedDataObject[items]).forEach(item => {
+          if (notChangedDataObject[items][item].length) {
+            flag = true;
+          }
+        });
+      });
+    
+      if (flag) {
+        await callMsgBox("変更できなかったデータがあります");
+      }
+    } catch (error) {
+      await callMsgBox("失敗しました");
+      await callSetLog(notChangedDataObject);
+    }
   }
   
   // 「キャンセル」ボタンクリック
@@ -102,16 +125,18 @@
   
   // 認定処理呼び出し
   function callCertScoutSkill(targetList, data, certpsn, date) {
-    return new Promise((resolve, reject) => {
+    var result =  new Promise((resolve, reject) => {
       google.script.run
-        .withSuccessHandler(() => {
-          resolve(0);
+        .withSuccessHandler((notChangedDataObject) => {
+          resolve(notChangedDataObject);
         })
-        .withFailureHandler(() => {
+        .withFailureHandler((notChangedDataObject) => {
           reject(1);
         })
         .certScoutSkill(targetList, data, certpsn, date);
     });
+    
+    return result;
   }
   
   // メッセージボックス表示
@@ -123,8 +148,18 @@
         .MsgBox(msg);
     });
     
-    result.then(() => {
-      return;
+    return result;
+  }
+  
+  // ログ処理
+  function callSetLog(msg) {
+    var result = new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(() => resolve(0))
+        .withFailureHandler(() => reject(1))
+        .SetLog(msg);
     });
+    
+    return result;
   }
 </script>
